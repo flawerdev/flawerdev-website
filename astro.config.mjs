@@ -14,4 +14,12 @@ export default defineConfig({
       theme: "github-dark-high-contrast",
     },
   },
+  i18n: {
+    defaultLocale: "es",
+    locales: ["es", "en"],
+    routing: {
+      prefixDefaultLocale: true,
+    },
+  },
+  trailingSlash: "always", 
 });

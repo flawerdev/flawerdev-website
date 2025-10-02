@@ -4,9 +4,11 @@ type Props = {
   slug: string;
   excerpt: string;
   date: Date;
+  t: (key: string) => string;
+  currentLang: string;
 };
 
-const { title, slug, excerpt, date } = Astro.props;
+const { title, slug, excerpt, date, t, currentLang } = Astro.props;
 ---
 
 <div
@@ -28,7 +30,7 @@ const { title, slug, excerpt, date } = Astro.props;
       </h2>
       <p class="text-white font-medium tracking-widest text-sm mb-4">
         [{
-          date.toLocaleDateString("en-us", {
+          date.toLocaleDateString(currentLang, {
             year: "numeric",
             month: "short",
             day: "numeric",
@@ -39,7 +41,7 @@ const { title, slug, excerpt, date } = Astro.props;
       <p
         class="text-white absolute bottom-4 font-medium inline-flex items-center group-hover:underline-offset-4 underline-offset-8 underline transition-all ease-in-out"
       >
-        Read more
+        {t("readMore")}
         <svg
           class="w-4 h-4 ml-2 transform group-hover:-translate-x-1 transition-transform"
           fill="none"

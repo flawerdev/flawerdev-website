@@ -1,0 +1,39 @@
+{
+  "siteDescription": "flawerdev's portfolio",
+  "nav": {
+    "about": "About Me",
+    "blog": "Blog",
+    "github": "Github",
+    "source": "Source"
+  },
+  "aboutMe": "Hi! i'm flawer. I'm a computer systems analyst & software developer based in Chile (they/them) with a background in English teaching. I discovered coding during the pandemic through Twitch's live study and coworking communities which inspired me to switch paths. I enjoy building thoughtful, practical projects and have ideas in my own way and at my own pace. I'm passionate about learning and growing every day. Beyond coding, I love music, curating playlists, and sharing guitar covers. My goal is to create a cozy, welcoming space where tech, creativity, and curiosity come together.",
+  "projects": [
+    {
+      "title": "Task List",
+      "description": "Manage tasks by adding, editing, completing, and deleting them, with all the data saved in the browser. Built with HTML, CSS, and JavaScript."
+    },
+    {
+      "title": "Weather App",
+      "description": "Check the current weather of any city with temperature, description, and icons, using the OpenWeather API. Built with HTML, CSS, and JavaScript(Vite) and designed for easy deployment."
+    }
+  ],
+  "footer": {
+    "allRightsReserved": "All rights reserved."
+  },
+  "knownTech": [
+    "Python",
+    "JavaScript",
+    "HTML",
+    "CSS",
+    "React",
+    "TypeScript",
+    "Django",
+    "SQL",
+    "PostgreSQL"
+  ],
+  "techSection": "Technologies I Know",
+  "projectsSection": "My Projects",
+  "postsSection": "My Posts",
+  "viewProject": "View Project",
+  "readMore": "Read more"
+}

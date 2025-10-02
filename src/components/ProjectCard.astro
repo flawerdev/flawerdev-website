@@ -4,9 +4,11 @@ type Props = {
   description: string;
   link: string;
   image?: string;
+  t: (key: string) => string;
 };
 
-const { title, description, link, image } = Astro.props;
+const { title, description, link, image, t } = Astro.props;
+
 ---
 
 <div
@@ -36,7 +38,7 @@ const { title, description, link, image } = Astro.props;
       <p
         class="text-white absolute bottom-4 font-medium inline-flex items-center group-hover:underline-offset-4 underline-offset-8 underline transition-all ease-in-out"
       >
-        View Project
+        {t("viewProject")}
         <svg
           class="w-4 h-4 ml-2 transform group-hover:-translate-x-1 transition-transform"
           fill="none"

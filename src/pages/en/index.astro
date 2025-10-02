@@ -1,0 +1,70 @@
+---
+import { getCollection } from "astro:content";
+import Hero from "@/components/Hero.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Section from "@/components/Section.astro";
+import BlogPostCard from "@/components/BlogPostCard.astro";
+import Layout from "../../layouts/Layout.astro";
+import ProjectCard from "@/components/ProjectCard.astro";
+import { useTranslations } from "@/i18n/utils";
+import { languageList } from "@/i18n/ui";
+
+const currentLang = (Astro.currentLocale || "en") as "en" | "es";
+const t = useTranslations(currentLang);
+
+
+const posts = (await getCollection("blog")).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const projects = t("projects"); 
+const techs = t("knownTech") || [];
+---
+
+<Layout title={t("siteDescription")} t={t} currentLang={currentLang} languageList={languageList}>
+  <Hero t={t} currentLang={currentLang} />
+
+  <Section id="about-me" title={t("nav.about")}>
+    <div class="w-full grid place-items-center">
+      <div class="scroll-mt-[6rem] max-w-4xl text-xl md:text-lg opacity-90 text-center justify-evenly">
+        <p>{t("aboutMe")}</p>
+      </div>
+    </div>
+  </Section>
+
+  <Section title={t("techSection")} full_screen={false}>
+    <div class="w-full grid place-items-center">
+      <div class="w-full gap-4 flex flex-wrap px-3 max-w-xl text-lg justify-center">
+        {techs.map((x: string) => <Breadcrumb title={x} />)}
+      </div>
+    </div>
+  </Section>
+
+  <Section title={t("projectsSection")} full_screen={false}>
+    <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+      {projects.map((project: { title: string; description: string; link: string }) => (
+        <ProjectCard
+          title={project.title}
+          description={project.description}
+          link={project.link}
+          t={t}
+        />
+      ))}
+    </div>
+  </Section>
+
+  <Section title={t("postsSection")} className="bg-gradient-to-b from-black/70 from-[5%] to-black via-black">
+    <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+      {posts.map((post) => (
+        <BlogPostCard
+          slug={post.id}
+          title={post.data.title}
+          excerpt={post.data.description}
+          date={post.data.pubDate}
+          t={t}
+          currentLang={currentLang}
+        />
+      ))}
+    </div>
+  </Section>
+</Layout>

@@ -1,12 +1,24 @@
 ---
+const { t, currentLang, languageList } = Astro.props;
 import { SITE_TITLE, NAV_LINKS as links } from "@/consts";
+
+// Map link titles to JSON translation keys
+const navKeyMap: Record<string, string> = {
+  "About Me": "about",
+  "Blog": "blog",
+  "Github": "github",
+  "Source": "source",
+};
+
+// Current path to highlight active link
+const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, "");
+const subpath = pathname.match(/[^\/]+/g);
 ---
 
 <nav class="fixed top-0 w-full h-20 !z-[9999] py-5 px-4 bg-black/90 backdrop-blur-sm">
-  <div
-    class="w-full grid gap-4 md:px-5 place-items-center grid-cols-1 md:flex md:justify-between md:px-4"
-  >
-    <a href="/">
+  <div class="w-full grid gap-4 md:px-5 place-items-center grid-cols-1 md:flex md:justify-between md:px-4">
+    <!-- Logo -->
+    <a href={currentLang === "es" ? "/" : "/en/"}>
       <div
         id="logo"
         class="pt-2 pb-1 !grid !place-items-center select-none leading-none hover:bg-black bg-white scale-110 hover:text-white text-black px-4 transition-all ease-in-out"
@@ -14,33 +26,54 @@ import { SITE_TITLE, NAV_LINKS as links } from "@/consts";
         {SITE_TITLE}
       </div>
     </a>
-    <div class="flex flex-wrap gap-4 md:pr-5">
-      <div class="hidden md:block">/</div>
-      {
-        links.map((link) => {
-          const href =
-            link.href ?? link.title.toLowerCase().replaceAll(" ", "-");
-          const pathname = Astro.url.pathname.replace(
-            import.meta.env.BASE_URL,
-            "",
-          );
-          const subpath = pathname.match(/[^\/]+/g);
-          const isActive =
-            href === pathname || href === "/" + (subpath?.[0] || "");
+
+    <!-- Navigation Links -->
+    <div class="flex flex-wrap gap-4 md:pr-5 items-center">
+      {links.map((link, index) => {
+        const key = navKeyMap[link.title] ?? link.title.toLowerCase().replaceAll(" ", "");
+
+        // If the link is an internal anchor (#about-me), keep it as-is
+        const isAnchor = link.href?.startsWith("#") || link.title === "About Me";
+        const hrefPart = link.href ?? link.title.toLowerCase().replaceAll(" ", "-");
+        const localizedHref = isAnchor
+          ? hrefPart.startsWith("#")
+            ? hrefPart
+            : `#${hrefPart}`
+          : currentLang === "es"
+          ? `/${hrefPart}/`
+          : `/en/${hrefPart}/`;
+
+        const isActive = pathname === localizedHref || pathname === localizedHref + "/";
+
+        return (
+          <>
+            <a
+              href={localizedHref}
+              class:list={[{ "bg-white text-black": isActive }]}
+              class="hover:bg-white hover:text-black transition-all ease-in-out px-2 max-w-fit"
+            >
+              {t(`nav.${key}`)}
+            </a>
+            {index < links.length - 1 && <div class="hidden md:block">/</div>}
+          </>
+        );
+      })}
+
+      <!-- Language Switcher -->
+      <div class="flex gap-2">
+        {Object.entries(languageList).map(([key, label]) => {
+          if (key === currentLang) return null;
+          const switchHref = key === "es" ? "/" : "/en/"; // trailing slash
           return (
-            <>
-              <a
-                class:list={[{ "bg-white text-black": isActive }]}
-                class="hover:bg-white hover:text-black transition-all ease-in-out px-2 max-w-fit"
-                href={`/${href}`}
-              >
-                <div>{link.title}</div>
-              </a>
-              <div class="hidden md:block">/</div>
-            </>
+            <a
+              href={switchHref}
+              class="px-2 py-1 border border-white rounded hover:bg-white hover:text-black transition-all"
+            >
+              {label}
+            </a>
           );
-        })
-      }
+        })}
+      </div>
     </div>
   </div>
 </nav>

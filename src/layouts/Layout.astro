@@ -4,18 +4,29 @@ import BaseHead from "@/components/BaseHead.astro";
 import Navbar from "@/components/Navbar.astro";
 import Footer from "@/components/Footer.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "@/consts";
-
-const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props;
+import { languageList } from "../i18n/ui";
+import { useTranslations } from "../i18n/utils";
+ 
+const currentLang = (Astro.currentLocale || "es") as "en" | "es";
+const t = useTranslations(currentLang);
+const { title = SITE_TITLE } = Astro.props;
 ---
 
-<html lang="en" class="!overflow-x-hidden">
+<html lang={currentLang} class="!overflow-x-hidden">
   <head>
-    <BaseHead title={title} description={description} />
+    <BaseHead title={title} description={t("siteDescription")} />
   </head>
 
   <body class="bg-black text-white tracking-wide !overflow-x-hidden">
-    <header class="fixed top-0 w-screen z-[9999]"><Navbar /></header>
-    <main class="pt-28 md:pt-20"><slot /></main>
-    <footer class="w-screen bottom-0 overflow-x-hidden"><Footer /></footer>
+    <header class="fixed top-0 w-screen z-[9999]">
+      <Navbar t={t} currentLang={currentLang} languageList={languageList} />
+    </header>
+
+    <main class="pt-28 md:pt-20">
+      <slot />
+    </main>
+
+    <footer class="w-screen bottom-0 overflow-x-hidden">
+      <Footer t={t} /></footer>
   </body>
 </html>

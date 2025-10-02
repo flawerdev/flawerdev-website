@@ -2,6 +2,10 @@
 import { Image } from "astro:assets";
 import PenguImg from "@/pengu.png";
 import { QUOTE, SITE_TITLE } from "@/consts";
+
+const { siteTitle } = Astro.props;
+// Fallback to SITE_TITLE if nothing is passed
+const titleToShow = siteTitle ?? SITE_TITLE;
 ---
 
 <div class="hero-bg hidden md:block h-screen hero-bg-animate absolute top-0"></div>
@@ -11,7 +15,7 @@ import { QUOTE, SITE_TITLE } from "@/consts";
 >
   <div class="grid place-items-center">
     <div class="text-center -mt-10">
-      <h1 class="font-bold text-7xl">{`<${SITE_TITLE} />`}</h1>
+      <h1 class="font-bold text-7xl">{`<${titleToShow} />`}</h1>
       <h2 class="text-2xl opacity-95">
         {QUOTE}
       </h2>
