@@ -5,83 +5,120 @@ import Breadcrumb from "@/components/Breadcrumb.astro";
 import Section from "@/components/Section.astro";
 import BlogPostCard from "@/components/BlogPostCard.astro";
 import Layout from "@/layouts/Layout.astro";
-import { KNOWN_TECH, ABOUT_ME } from "@/consts";
+import { KNOWN_TECH, ABOUT_ME, CONTACT_EMAIL } from "@/consts";
 import ProjectCard from "@/components/ProjectCard.astro";
+
 const posts = (await getCollection("blog")).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
+
 const projects = (await getCollection("projects")).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
-console.log(projects);
 ---
 
 <Layout title="flawerdev">
   <Hero />
-   <Section id="about-me" title="About Me">
+
+  <!-- About Me Section -->
+  <Section id="about-me" title="Acerca de Mí">
     <div class="w-full grid place-items-center">
-      <div
-        class="max-w-4xl text-xl md:text-lg opacity-90 text-center justify-evenly"
-      >
+      <div class="max-w-4xl text-xl md:text-lg opacity-90 text-center justify-evenly">
         <p>{ABOUT_ME}</p>
       </div>
     </div>
   </Section>
 
-  <Section title="Technologies I Know" full_screen={false}>
+  <!-- Technologies -->
+  <Section title="Tecnologías que conozco" full_screen={false}>
     <div class="w-full grid place-items-center">
-      <div
-        class="w-full gap-4 flex flex-wrap px-3 max-w-xl text-lg justify-center"
-      >
-        {KNOWN_TECH.map((x) => <Breadcrumb title={x} />)}
+      <div class="w-full gap-4 flex flex-wrap px-3 max-w-xl text-lg justify-center">
+        {KNOWN_TECH.map((tech) => (
+          <Breadcrumb title={tech} />
+        ))}
       </div>
     </div>
   </Section>
 
+  <!-- Projects -->
   <Section
     title="Proyectos"
-    className={"bg-gradient-to-b from-black/70 from-[5%] to-black via-black"}
+    className="bg-gradient-to-b from-black/70 from-[5%] to-black via-black"
   >
     <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
-  {projects.map((project) => (
-    <ProjectCard
-      title={project.data.title}
-      description={project.data.description}
-      link={project.data.link}
-      date={project.data.pubDate}
-    />
-  ))}
-</div>
-
-  </Section>
-
-  <Section
-    title="Mis Posts"
-    className={"bg-gradient-to-b from-black/70 from-[5%] to-black via-black"}
-  >
-    <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
-      {
-        posts.map((post) => (
-          <BlogPostCard
-            slug={post.id}
-            title={post.data.title}
-            excerpt={post.data.description}
-            date={post.data.pubDate}
-          />
-        ))
-      }
+      {projects.map((project) => (
+        <ProjectCard
+          title={project.data.title}
+          description={project.data.description}
+          link={project.data.link}
+          date={project.data.pubDate}
+        />
+      ))}
     </div>
   </Section>
 
+  <!-- Blog Posts -->
+  <Section
+    title="Mis Posts"
+    className="bg-gradient-to-b from-black/70 from-[5%] to-black via-black"
+  >
+    <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+      {posts.map((post) => (
+        <BlogPostCard
+          slug={post.id}
+          title={post.data.title}
+          excerpt={post.data.description}
+          date={post.data.pubDate}
+        />
+      ))}
+    </div>
+  </Section>
 
-  <script>
+  <!-- Contact Section -->
+  <Section id="contact" title="Contacto">
+    <div class="w-full grid place-items-center">
+      <p class="text-center mb-4">Ponte en contacto conmigo:</p>
+      <div class="flex flex-col items-center gap-2">
+        <span id="email" class="font-mono text-lg">{CONTACT_EMAIL}</span>
+        <button
+          id="copy-btn"
+          class="px-4 py-2 bg-white text-black rounded hover:bg-gray-200 transition"
+        >
+          Copiar Email
+        </button>
+        <span
+          id="copy-msg"
+          class="opacity-0 transition-opacity duration-500 text-sm text-green-400"
+        >
+          Copiado al portapapeles! 
+        </span>
+      </div>
+    </div>
+  </Section>
+</Layout>
+
+<script>
+  // Smooth scroll to hash on load or hash change
   function scrollToHash() {
     if (window.location.hash) {
       const el = document.querySelector(window.location.hash);
       if (el) el.scrollIntoView({ behavior: "smooth" });
     }
   }
-
   window.addEventListener("load", scrollToHash);
   window.addEventListener("hashchange", scrollToHash);
+
+  // Copy email functionality
+  const btn = document.getElementById("copy-btn");
+  const msg = document.getElementById("copy-msg");
+  const emailEl = document.getElementById("email");
+
+  if (btn && msg && emailEl) {
+    const email = emailEl.innerText;
+    btn.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(email);
+      msg.style.opacity = "1";
+      setTimeout(() => (msg.style.opacity = "0"), 2000);
+    });
+  }
 </script>

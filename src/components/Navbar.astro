@@ -3,9 +3,7 @@ import { SITE_TITLE, NAV_LINKS as links } from "@/consts";
 ---
 
 <nav class="w-full !z-[9999] py-5 px-4 bg-black/90 backdrop-blur-sm">
-  <div
-    class="w-full grid gap-4 md:px-5 place-items-center grid-cols-1 md:flex md:justify-between md:px-4"
-  >
+  <div class="w-full grid gap-4 md:px-5 place-items-center grid-cols-1 md:flex md:justify-between md:px-4">
     <a href="/">
       <div
         id="logo"
@@ -14,25 +12,23 @@ import { SITE_TITLE, NAV_LINKS as links } from "@/consts";
         {SITE_TITLE}
       </div>
     </a>
-    <div class="flex flex-wrap gap-4 md:pr-5">
+
+    <div class="flex flex-wrap gap-4 md:pr-5 items-center">
       <div class="hidden md:block">/</div>
       {
         links.map((link) => {
-          const href =
-            link.href ?? link.title.toLowerCase().replaceAll(" ", "-");
-          const pathname = Astro.url.pathname.replace(
-            import.meta.env.BASE_URL,
-            "",
-          );
+          const href = link.href ?? link.title.toLowerCase().replaceAll(" ", "-");
+          const pathname = Astro.url.pathname.replace(import.meta.env.BASE_URL, "");
           const subpath = pathname.match(/[^\/]+/g);
-          const isActive =
-            href === pathname || href === "/" + (subpath?.[0] || "");
+          const isActive = href === pathname || href === "/" + (subpath?.[0] || "");
           return (
             <>
               <a
                 class:list={[{ "bg-white text-black": isActive }]}
                 class="hover:bg-white hover:text-black transition-all ease-in-out px-2 max-w-fit"
-                href={`/${href}`}
+                href={href}
+                target={href.startsWith("//") ? "_blank" : undefined}
+                rel={href.startsWith("//") ? "noopener noreferrer" : undefined}
               >
                 <div>{link.title}</div>
               </a>
@@ -41,9 +37,63 @@ import { SITE_TITLE, NAV_LINKS as links } from "@/consts";
           );
         })
       }
+
+      <!-- Botón de Contacto -->
+      <button
+        class="hover:bg-white hover:text-black transition-all ease-in-out px-2 max-w-fit border border-white"
+        onclick="document.getElementById('contact-modal').classList.remove('hidden')"
+      >
+        Contacto
+      </button>
     </div>
   </div>
 </nav>
+
+<!-- Modal de Contacto estilo card -->
+<div
+  id="contact-modal"
+  class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+>
+  <div class="bg-black text-white border border-white rounded-2xl max-w-md w-full shadow-xl relative">
+    <!-- Barra superior estilo ventana -->
+    <div class="flex items-center gap-2 px-4 py-2 bg-white rounded-t-2xl">
+      <div class="w-3 h-3 rounded-full bg-black"></div>
+      <div class="w-3 h-3 rounded-full bg-black"></div>
+      <div class="w-3 h-3 rounded-full bg-black"></div>
+      <!-- Botón cerrar -->
+      <button
+        class="ml-auto text-black font-bold text-lg"
+        onclick="document.getElementById('contact-modal').classList.add('hidden')"
+      >
+        ✕
+      </button>
+    </div>
+
+    <!-- Contenido de la card -->
+    <div class="p-6 flex flex-col gap-4">
+      <h2 class="text-xl font-bold">&gt; Contacto</h2>
+      <p>
+        Puedes escribirme a: 
+        <span id="contact-email" class="font-mono underline">flawerdev@gmail.com</span>
+      </p>
+      <div class="flex gap-2">
+        <button
+          class="flex-1 bg-black text-white border border-white px-4 py-2 rounded hover:bg-gray-800 transition"
+          onclick="navigator.clipboard.writeText(document.getElementById('contact-email').textContent).then(()=>alert('Correo copiado!'))"
+        >
+          Copiar correo
+        </button>
+        <a
+          href="https://github.com/flawerdev"
+          target="_blank"
+          class="flex-1 bg-black text-white border border-white px-4 py-2 rounded hover:bg-gray-800 transition text-center"
+        >
+          GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
   window.addEventListener("scroll", () => {
